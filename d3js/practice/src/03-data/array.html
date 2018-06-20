@@ -1,0 +1,80 @@
+<html>
+<head>
+    <title>Array</title>
+
+    <style>
+
+        body {
+            font-family: "helvetica";
+        }
+        .h-bar {
+            background-color: cadetblue;
+            padding-bottom: 2px;
+            min-height: 10px;
+            min-width: 15px;
+            font-size: 11px;
+            color: #f0f8ff;
+            text-align: right;
+            padding-right: 2px;
+            margin: 5px;
+
+        }
+    </style>
+</head>
+<body>
+    
+    <script src="../../lib/d3.js"></script>
+    <script>
+
+        function render(data){
+
+            var bars = d3.select("body").selectAll("div.h-bar") // <- C
+                .data(data); // Update <- D
+
+        /*// Enter
+        bars.enter() // <- E
+                .append("div") // <- F
+                    .attr("class", "h-bar") // <- G
+            .merge(bars) // Enter + Update <- H
+                .style("width", function (d) {
+                    return (d * 3) + "px"; // <- I
+                })
+                .text(function (d) {
+                    return d; // <- J
+                });
+
+
+        // Exit
+        bars.exit() // <- K
+                .remove();
+*/
+            var div = d3.select('body').selectAll('div.h-bar')
+            .data(data)
+
+            div.enter() 
+                .append('div')
+                .classed('h-bar', true)
+                 .merge(div)
+                .style('width', (d)=>d*3)
+                .text((d,i)=>d)
+
+            // div.exit().remove();
+
+        }
+
+        var data = [31,32,53,34,25,16, 34,56,67,35]
+        render(data);
+        
+
+        setInterval(()=>{
+            data.shift()
+            data.push(Math.round(Math.random()*100))
+            console.log(data);
+            render(data);
+        }, 1000)
+
+
+    
+    </script>
+</body>
+</html>

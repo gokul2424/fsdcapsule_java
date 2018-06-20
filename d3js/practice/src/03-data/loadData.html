@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Data Filter</title>
+    <link rel="stylesheet" type="text/css" href="../../css/styles.css"/>
+    <script type="text/javascript" src="../../lib/d3.js"></script>
+</head>
+
+<body>
+
+<script type="text/javascript">
+    var data = [];
+
+    function render(data, comparator)
+    {
+       var bars = d3.select("body").selectAll("div.h-bar") // <-B
+                .data(data);
+
+        // Enter
+        bars.enter()
+            .append("div") // <-C
+                .attr("class", "h-bar")
+                .append('span')
+
+        d3.selectAll("div.h-bar")       
+                .style("width", function (d) {
+                    return (d.expense * 5) + "px";}
+                )
+            .select("span") // <-D
+                .text(function (d) {
+                    return d.category;
+                });
+
+        // Update
+        // d3.selectAll("div.h-bar").attr("class", "h-bar");
+
+        // Filter
+
+
+        if(comparator){
+            bars.sort(comparator)
+        }
+
+       
+            
+
+    }
+    d3.json('files/data.json', function(error, content){
+        data = content
+        render(data)
+    })
+
+    // render(data)
+
+    function sort(sort) {
+        render(data, sort);
+    }
+
+    function compareByExpense(a,b){
+        return a.expense<b.expense?-1:1
+    }
+    function compareByCategory(a,b){
+        return a.category<b.category?-1:1
+    }
+
+
+</script>
+
+
+<div class="control-group">
+    <button onclick="sort(compareByExpense)">
+        Expense
+    </button>
+    <button onclick="sort(compareByCategory)">
+        Category
+    </button>
+   
+</div>
+</body>
+
+</html>

@@ -1,0 +1,83 @@
+<html>
+<head>
+    <title>Array</title>
+
+    <style>
+
+        body {
+            font-family: "helvetica";
+        }
+        .h-bar {
+            background-color: cadetblue;
+            padding-bottom: 2px;
+            min-height: 10px;
+            min-width: 15px;
+            font-size: 11px;
+            color: #f0f8ff;
+            text-align: right;
+            padding-right: 2px;
+            margin: 5px;
+
+        }
+    </style>
+</head>
+<body>
+    
+    <script src="../../lib/d3.js"></script>
+    <script>
+
+        function render(data){
+
+            var bars = d3.select("body").selectAll("div.h-bar") // <- C
+                .data(data); // Update <- D
+
+                var domain = []
+                for(var i=1;i<101;i++){
+                    domain.push(i)
+                }
+
+
+             let scale = d3.scaleOrdinal()
+                .domain(domain)
+                .range(["#add8e6", "blue"]); // <- B   
+       
+            var div = d3.select('body').selectAll('div.h-bar')
+            .data(data)
+
+            div.enter() 
+                .append('div')
+                .classed('h-bar', true)
+                 .merge(div)
+                .style('width', (d)=>d.width*3)
+                .style('background-color', (d)=>scale(d.color))
+                .text((d,i)=>d.width)
+
+            // div.exit().remove();
+
+        }
+        var data = [ // <- A
+        {width: 10, color: 23},{width: 15, color: 33},
+        {width: 30, color: 40},{width: 50, color: 60},
+        {width: 80, color: 22},{width: 65, color: 10},
+        {width: 55, color: 5},{width: 30, color: 30},
+        {width: 20, color: 60},{width: 10, color: 90},
+        {width: 8, color: 10}
+    ];
+        // var data = [31,32,53,34,25,16, 34,56,67,35]
+        render(data);
+        
+        function randomValue(){
+            return Math.round(Math.random()*100)
+        }
+        setInterval(()=>{
+            data.shift()
+            data.push({width: randomValue(), color: randomValue()})
+            // console.log(data);
+            render(data);
+        }, 1000)
+
+
+    
+    </script>
+</body>
+</html>

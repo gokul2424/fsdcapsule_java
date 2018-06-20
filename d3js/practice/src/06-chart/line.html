@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Array as Data</title>
+    <link rel="stylesheet" type="text/css" href="../../css/styles.css"/>
+    <script type="text/javascript" src="../../lib/d3.js"></script>
+
+    <style>
+        svg line, svg path{
+            stroke: black;
+            stroke-width: 1;
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <!--<svg width=500 height=500 style="background-color: azure">
+        <g>
+            <line x1="0" y1="0" x2="500" y2="500" stroke="black"></line>
+
+            <path class="line" d="M0,0 L200,200"></path>
+            
+        </g>
+       
+
+    </svg>-->
+
+    <button onclick="render(1)">1</button>
+    <button onclick="render(0.8)">0.8</button>
+    <button onclick="render(0.6)">.6</button>
+    <button onclick="render(.4)">.4</button>
+    <button onclick="render(.2)">.2</button>
+
+   
+<script type="text/javascript">
+
+   /* var line = d3.line()
+        .x((d)=> x(d.x))
+        .y((d)=> y(d.y))*/
+
+        var width = 500,
+        height = 500,
+        margin = 50,
+         x = d3.scaleLinear() // <-A
+            .domain([0, 10])
+            .range([margin, width - margin]),
+        y = d3.scaleLinear() // <-B
+            .domain([0, 10])
+            .range([height - margin, margin]);
+
+
+        var tension = 0.2
+        var duration = 5000
+
+            
+
+       /* var line = d3.line() // <-D
+            .curve(d3.curveCardinal.tension(0))
+            // .interpolate('linear')
+            // .transition().duration(5000)
+            .x(function(d){ console.log('test'); return x(d.x) })
+            .y(function(d){return y(d.y) });*/
+
+    
+        var data = [
+            // [
+            {x: 0, y: 5},{x: 1, y: 9},{x: 2, y: 7},
+            {x: 3, y: 5},{x: 4, y: 3},{x: 6, y: 4},
+            {x: 7, y: 2},{x: 8, y: 3},{x: 9, y: 2}
+        // ]
+        ]
+
+       
+
+            var svg = d3.select('body').append('svg')
+                .attr('width', 500)
+                .attr('height', 500)
+
+
+                render(0);
+    
+    function render(tension){
+        var line = d3.line()
+                .curve(d3.curveCardinal.tension(tension)) // <-A
+                .x(function(d){return x(d.x);})
+                .y(function(d){return y(d.y);});
+                
+        /*svg.selectAll("path.line")
+                .data([tension])
+            .enter()
+                .append("path")
+                .attr("class", "line");
+
+        svg.selectAll("path.line")
+                .data([tension])
+            .transition().duration(duration)
+                .ease(d3.easeLinear) // <-B
+            .attr("d", function(d){
+                return line(data); // <-C
+            });*/
+
+            svg.selectAll("path.line")
+            .data(data)
+                .enter()
+                    .append("path") // <-E
+                    .attr("class", "line")            
+                    // .attr("d", function(d){ return line(data);});   
+
+
+           svg.selectAll("path.line")
+                .data([tension])
+            // .transition().duration(5000)
+                // .ease(d3.easeLinear) // <-B
+           .attr("d", function(d){
+                return line(data); // <-C
+            });
+            
+        /*svg.selectAll("circle")
+            .data(data)
+          .enter().append("circle")
+            .attr("class", "dot")
+            .attr("cx", function(d) { return x(d.x); })
+            .attr("cy", function(d) { return y(d.y); })
+            .attr("r", 4.5);*/
+    }
+    
+
+
+                
+
+
+            /*svg.selectAll("path.line")
+            .data(data)
+                .enter()
+                    .append("path") // <-E
+                    .attr("class", "line")            
+                    // .attr("d", function(d){ return line(d);});   
+
+
+           svg.selectAll("path.line")
+                .data([0])
+            .transition().duration(5000)
+                .ease(d3.easeLinear) // <-B
+           .attr("d", function(d){
+                return line(data); // <-C
+            });     */  
+
+
+             let axisX = d3.axisBottom().scale(x).ticks(10);   
+             let axisGroupX = svg.append('g')
+                 .classed('axis', true)
+                 .call(axisX);  
+
+                 axisGroupX.attr('transform', function(){
+                        //  return 'translate(0,400)'
+                          return "translate(" + 0 + ", " + (width-margin) + ")";
+                 }) 
+
+             
+             let axisY = d3.axisLeft().scale(y);
+             let axisGroupY = svg.append('g')
+                 .classed('axis', true)
+                 .call(axisY);   
+
+                 axisGroupY.attr('transform', function(){
+                        //  return 'translate(50,0)'
+                          return "translate(" + margin + ", " + 0 + ")";
+                 })  
+
+
+
+
+             
+
+           /* svg.selectAll("path")
+                .data(data)
+                .enter()
+                    .append('path')
+                       .attr('d', function(d) {console.log(d); return liner(d) })
+                    //    .attr('d', 'M0,0 L50,50 L150,150 L250,250 Z')*/
+
+           /* svg.selectAll("line")
+                .data(data)
+                .enter()
+                    .append('line')
+                        .attr('x1', (d)=>d.x1 )
+                        .attr('y1', (d)=>d.y1 )
+                        .attr('x2', (d)=>d.x2 )
+                        .attr('y2', (d)=>d.y2 )*/
+
+
+
+    
+
+    /*function renderPath(){
+
+        var data = "M0,0 L200,200"
+
+
+        var svg = d3.select('body').append('svg')
+                .attr('width', 500)
+                .attr('height', 500)
+
+        svg.selectAll("path")
+                .data(data)
+                .enter()
+                    .append('path')
+                        .attr('d', (d)=>line(d) )
+                       
+    }
+
+    
+    render();*/
+    // renderPath();
+
+
+
+
+</script>
+
+</body>
+
+</html>

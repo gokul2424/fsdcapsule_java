@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Array as Data</title>
+    <link rel="stylesheet" type="text/css" href="../../css/styles.css"/>
+    <script type="text/javascript" src="../../lib/d3.js"></script>
+
+
+   <!-- <style>
+        svg 
+    </style>
+-->
+    
+</head>
+
+<body>
+
+   <button onclick="renderAll(d3.axisTop)">Axis Top</button>
+   <button onclick="renderAll(d3.axisRight)">Axis Right</button>
+   <button onclick="renderAll(d3.axisLeft)">Axis Left</button>
+<script type="text/javascript">
+let svg,
+    width = 500,
+    height = 500,
+    margin = 25
+    offset = 50
+    axisWidth = width - 2 * margin
+
+let createSvg = function(){
+    svg = d3.select('body').append('svg')
+        .classed('axis', true)
+        .attr('height', 500)
+        .attr('width', width)
+
+}
+
+let render = function(axis,i, type){
+
+   console.log(i)
+   console.log(axis);
+
+   svg.append('g')
+        .classed('axis', true)
+       .attr("transform", function(){ // <-H
+                if([d3.axisTop, d3.axisBottom].indexOf(type) >= 0)
+                    return "translate(" + margin + "," + i * offset + ")";
+                else
+                    return "translate(" + i * offset + ", " + margin + ")";
+            })
+        .call(axis);
+
+}
+
+
+let renderAll = function(axisType){
+
+
+    if(svg) svg.remove();
+        
+   createSvg();
+    let scale = d3.scaleLinear()
+    .domain([0, 1000])
+    .range([0,axisWidth]); 
+
+    let axis = axisType(scale)
+    render(axis, 1, axisType)
+
+    let powScale = d3.scalePow().exponent(2)
+        .domain([1, 1000])
+        .rangeRound([1, axisWidth]);
+     let axisPow = axisType(powScale)
+     render(axisPow, 2, axisType)
+
+     let timeScale = d3.scaleTime()
+                    .domain([new Date(2016, 0, 1), new Date(2017, 0, 1)])
+                    .range([0, axisWidth])
+    let axisTime = axisType(timeScale).ticks(12)
+     render(axisTime, 3,axisType)
+
+
+}
+
+let scale = d3.scaleLinear()
+    .domain([0, 1000])
+    .range([0,axisWidth]); 
+let axis = d3.axisBottom(scale);
+
+
+createSvg();
+render(axis,1, d3.axisBottom);
+
+
+
+   
+
+</script>
+
+</body>
+
+</html>
